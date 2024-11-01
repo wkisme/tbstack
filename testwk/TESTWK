@@ -1,0 +1,30 @@
+prometheus@XG41:~/module-test/ptrace$ ./target_program  &
+[2] 3963910
+prometheus@XG41:~/module-test/ptrace$ Starting target program
+In func_a
+In func_b
+In func_c
+
+prometheus@XG41:~/module-test/ptrace$ ps -ef | grep target_program
+prometh+ 3962980 3915681  0 10:46 pts/0    00:00:00 ./target_program
+prometh+ 3963910 3915681  0 10:47 pts/0    00:00:00 ./target_program
+prometh+ 3964358 3915681  0 10:47 pts/0    00:00:00 grep target_program
+prometheus@XG41:~/module-test/ptrace$ ./tbstack 3962980 --ptrace
+--------------------  thread 1 (3962980)  --------------------
+ 00007e47d4ceca7a  clock_nanosleep + 0x5a
+ 00007e47d4cf9a27  nanosleep + 0x17
+ 00007e47d4d0ec63  sleep + 0x43
+ 00005d68563fa18a  func_c + 0x21
+ 00005d68563fa1ae  func_b + 0x21
+ 00005d68563fa1d2  func_a + 0x21
+ 00005d68563fa1f6  main + 0x21
+ 00007e47d4c2a1ca  __libc_init_first + 0x8a
+ 00007e47d4c2a28b  __libc_start_main + 0x8b
+ 00005d68563fa0a5  _start + 0x25
+-----------------------  summary  --------------------------
+ time the process was frozen: 1ms 241us
+ sleep count: 0
+ total bytes copied: 0x0 (0K)
+prometheus@XG41:~/module-test/ptrace$ addr2line -e target_program "func_b + 0x21"
+/home/prometheus/module-test/ptrace/target_program.c:12
+
